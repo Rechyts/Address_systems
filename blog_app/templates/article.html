@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+{% load leaflet_tags %}
+{% load static %}
+{% block article %}
+<h4>{{ article.article_date }}</h4>
+<h2>{{ article.article_title }}</h2>
+    <img src="{{ article.article_image.url }}" />
+
+<p>{{ article.article_text }}</p>
+    {{ point.media }}
+    {{ point }}
+<p><h3>Comments:</h3></p>
+{% for comment in comments%}
+    <p>{{ comment.comments_date }}<strong>{{ comment.comments_user.username }}</strong>: {{ comment.comments_text }}</p>
+{% endfor %}
+    {% if user.is_authenticated %}
+    <form action="/blog/articles/addcomment/{{ article.id }}/" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="button" value="Add Coment">
+    </form>
+    {% endif %}
+{% endblock %}

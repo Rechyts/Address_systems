@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">#}
+    <meta charset="UTF-8">
+    <title>Delete</title>
+</head>
+<body>
+<h1>Вы уверены, что хотите удалить "{{ object.name_stree }}"?</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <input type="submit" value="delete"> <a href="{% url 'details_street' pk=object.id %}"><img src="{% static 'button/back.png' %}"></a>
+</form>
+</body>
+</html>

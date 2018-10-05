@@ -1,0 +1,13 @@
+<html>
+<head>
+</head>
+<body>
+    {% if error %}
+        <p style="color: red;">Please submit a search term.</p>
+    {% endif %}
+    <form action="{% url 'ate_search' %}" method="get">
+        <input type="text" name="q">
+        <input type="submit" value="Поиск">
+    </form>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">#}
+    <meta charset="UTF-8">
+    <title>List</title>
+    {% load static %}
+</head>
+<body>
+<div>
+<h1>Список объектов</h1>
+</div>
+{% if object_list %}
+    <div>
+    <a href="{% url 'create_street' %}"><img src="{% static 'button/create_street.png' %}"></a>
+    <a href="{% url 'map' %}"><img src="{% static 'button/back.png' %}"></a>
+    </div>
+    <h5><strong>Поиск по наименованию улично-дорожной сети</strong></h5>
+    <div>{% include 'street/search_form.html' %}</div>
+{% endif %}
+{% for o in object_list %}
+    <div>
+    <hr>
+        <ul>
+            <li><a href="{% url 'details_street' pk=o.id %}">{{ o.name_stree }} - {{ o.cat_street }} - {{ o.id_ate }}</a></li>
+        </ul>
+    <hr>
+    </div>
+    {% empty %}
+    <a href="{% url 'create_street' %}"><img src="{% static 'button/create_street.png' %}"></a>
+{% endfor %}
+{% if is_paginated %}
+      <nav>
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li>
+              <a href="?page={{ page_obj.previous_page_number }}">
+                <span>Previous</span>
+              </a>
+            </li>
+          {% else %}
+            <li class="disabled">
+              <a href="#">
+                <span>Previous</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% for page in paginator.page_range %}
+            <li {% if page == page_obj.number %}class="active"{% endif %}>
+              <a href="?page={{ page }}">{{ page }}</a>
+            </li>
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li>
+              <a href="?page={{ page_obj.next_page_number }}">
+                <span>Next</span>
+              </a>
+            </li>
+          {% else %}
+            <li {% if not page_obj.has_next %}class="disabled"{% endif %}>
+              <a href="#">
+                <span>Next</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+ {% endif %}
+</body>
+</html>

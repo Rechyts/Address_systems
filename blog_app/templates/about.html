@@ -1,0 +1,59 @@
+{% extends 'main.html' %}
+{% load static %}
+{% block about %}
+    <style>
+    #title1, #title2, #title3, #col1, #col2, #col3 { /* 1 */
+
+    font-family: Verdana, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 80%;
+    color: white;
+    width: 200px;
+    padding: 5px;
+    border: 1px solid black;
+    margin-left: 5px;
+    margin-top: 2px;
+    float: left;
+
+    }
+
+    #col1, #col2, #col3 { /* 2 */
+
+    font-family: "Times New Roman", Times, serif;
+    font-size: 100%;
+    font-weight: normal;
+    color: black;
+
+    }
+    /* Цвет фона каждого слоя */
+
+    #title1 { background: #006077 }
+    #title2 { background: #006077 }
+    #title3 { background: #006077 }
+
+    #col1 { background: #ADD0D9 }
+    #col2 { background: #ADD0D9 }
+    #col3 { background: #ADD0D9 }
+    #tr { /* 3 */
+    clear: both;
+    }
+
+    </style>
+    <div id=tr>
+      <div id=title1>Моняк Анна Анатольевна</div>
+      <div id=title2>Речиц Вероника Сергеевна</div>
+      <div id=title3>Капыльский Юрий Михайлович</div>
+    </div><br>
+    <div id=tr>
+      <div id=col1>Специалист по ГИС</div>
+      <div id=col2>Специалист по ГИС 2-й категории</div>
+      <div id=col3>Специалист по ГИС 1-й категории</div>
+    </div>
+
+    <div><a href="http://nca.by/" target="_blank">Сайт ГУП "НКА"</a></div>
+    <p>Мы находимся тут</p>
+    <img src="{% static 'nca.png' %}">
+{#    width="100px" height="100px"#}
+
+
+{% endblock %}

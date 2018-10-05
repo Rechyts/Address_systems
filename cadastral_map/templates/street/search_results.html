@@ -1,0 +1,33 @@
+<html lang="en">
+<head>
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">#}
+    <meta charset="UTF-8">
+    <title>Result search</title>
+</head>
+<body>
+<p>Вы искали: <strong>{{ query }}</strong></p>
+
+{% if streets %}
+    <p>Найден {{ streets|length }} элемент улично-дорожной сети.</p>
+    <ul>
+        {% for street in streets %}
+            <div>
+                <hr>
+                    <ul>
+                         <li><a href="{% url 'details_street' pk=street.id %}">{{ street.name_stree }} - {{ street.cat_street }} - {{ street.id_ate }}</a></li>
+                    </ul>
+                <hr>
+            </div>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p style="color: red;">Нет объектов, удовлетворяющих критерию.</p>
+    <p style="color: red;">Пожалуйста введите слово для поиска снова.</p>
+     <form action="" method="get">
+        <input type="text" name="q">
+        <input type="submit" value="Поиск">
+    </form>
+{% endif %}
+</body>
+</html>

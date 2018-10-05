@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+{% block login %}
+    <form action="{% url 'login' %}" method="post">
+        {% csrf_token %}
+    <label for="username">Name of user</label>
+    <input type="text" name="username" id="username">
+    <hr>
+    <label for="password">Your password</label>
+    <input type="password" name="password" id="password">
+    {% if login_error %}
+        <label class="errors">{{ login_error }}</label>
+    {% endif %}
+    <hr>
+    <input class="button" type="submit" value="Login">
+    <div class="label"><a href={% url "register" %}>Registration</a> </div>
+    </form>
+{% endblock %}

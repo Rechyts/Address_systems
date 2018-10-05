@@ -1,0 +1,51 @@
+.customEditingToolbar {
+            float: right;
+            right: 0px;
+            height: 30px;
+        }
+        .customEditingToolbar div {
+            float: right;
+            margin: 5px;
+            width: 24px;
+            height: 24px;
+        }
+        .olControlNavigationItemActive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: -103px -23px;
+        }
+        .olControlNavigationItemInactive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: -103px -0px;
+        }
+        .olControlDrawFeaturePolygonItemInactive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: -26px 0px;
+        }
+        .olControlDrawFeaturePolygonItemActive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: -26px -23px ;
+        }
+        .olControlModifyFeatureItemActive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlModifyFeatureItemInactive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemActive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }
+        .olControlDeleteFeatureItemInactive {
+            background-image: url("img/mydelete.png");
+            background-repeat: no-repeat;
+            background-position: 0px 1px;
+        }

@@ -1,0 +1,61 @@
+{% extends 'main.html' %}
+{% load static %}
+{% load staticfiles %}
+{% block article %}
+{% if articles %}
+    {% for article in articles %}
+        <h6> Published date:{{ article.article_date }}</h6>
+        <h4><a href="{% url 'article' article.id %}">{{ article.article_title }}</a></h4>
+        <img src="{{ article.article_image.url }}" />
+        <p>{{ article.get_short_text }}<a href="{% url 'article' article.id %}"> read article</a></p>
+        <p> <a href="/blog/articles/addlike/{{ article.id }}/"><img src="{% static 'like1.png' %}" width="40px" height="35px"></a> {{ article.artticle_likes }} <strong>Comments</strong> ({{ article.article_comments }}) </p>
+
+        <hr>
+
+    {% endfor %}
+    {% if is_paginated %}
+      <nav>
+        <ul class="pagination">
+          {% if page_obj.has_previous %}
+            <li>
+              <a href="?page={{ page_obj.previous_page_number }}">
+                <span>Previous</span>
+              </a>
+            </li>
+          {% else %}
+            <li class="disabled">
+              <a href="#">
+                <span>Previous</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% for page in paginator.page_range %}
+            <li {% if page == page_obj.number %}class="active"{% endif %}>
+              <a href="?page={{ page }}">{{ page }}</a>
+            </li>
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li>
+              <a href="?page={{ page_obj.next_page_number }}">
+                <span>Next</span>
+              </a>
+            </li>
+          {% else %}
+            <li {% if not page_obj.has_next %}class="disabled"{% endif %}>
+              <a href="#">
+                <span>Next</span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+{% else %}
+    No articles
+{% endif %}
+
+
+{% endblock %}

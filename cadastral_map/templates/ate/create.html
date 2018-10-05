@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">#}
+    {{ form.media }}
+    <meta charset="UTF-8">
+    <title>Create</title>
+</head>
+<body>
+<h1>Создание объекта</h1>
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Отправить">
+</form>
+<a href="{% url 'map' %}"><img src="{% static 'button/back.png' %}"></a>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+{% load static %}
+<head>
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">#}
+{#    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">#}
+    {{ form.media }}
+    <meta charset="UTF-8">
+    <title>ATE</title>
+</head>
+<body>
+<h1>Редактирование населенного пункта</h1>
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="send">
+<div><a class="btn btn-danger" href="{% url 'delete_ate' pk=obj.pk %}">delete</a></div>
+</form>
+<a href="{% url 'list_ate' %}"><img src="{% static 'button/back.png' %}"></a>
+</body>
+</html>
+

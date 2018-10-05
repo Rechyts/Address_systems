@@ -1,0 +1,48 @@
+{% extends 'main.html' %}
+{% block map %}
+{% load leaflet_tags %}
+{% load static %}
+    {% if user.is_authenticated %}
+        <a href="{% url 'create_ate' %}"><img src="{% static 'button/create_ate.jpg' %}"></a>
+        <a href="{% url 'list_ate' %}"><img src="{% static 'button/list_ate.jpg' %}"></a>
+        <a href="{% url 'create_street' %}"><img src="{% static 'button/create_street.png' %}"></a>
+        <a href="{% url 'list_street' %}"><img src="{% static 'button/list_street.png' %}"></a>
+        <a href="{% url 'create_address' %}"><img src="{% static 'button/create_address.png' %}"></a>
+        <a href="{% url 'list_address' %}"><img src="{% static 'button/list_address.png' %}"></a>
+    {% endif %}
+        <style media="screen">
+            #belarus { height:680px; width:100%; position: relative}
+        </style>
+      {% leaflet_js %}
+      {% leaflet_css %}
+      {% leaflet_map "belarus" callback="window.map_init_basic" %}
+      <script src="{% static 'leaflet-ajax/dist/leaflet.ajax.min.js' %}"></script>
+      <script src="{% static 'spin.js/spin.min.js' %}"></script>
+      <script src="{% static 'leaflet-spin/leaflet.spin.js' %}"></script>
+      <script src="{% static 'text-path/leaflet.textpath.js' %}"></script>
+      <script type="text/javascript">
+         function map_init_basic (map, options) {
+               var geojsonStreetsLayer = new L.GeoJSON.AJAX("{% url 'street' %}", {
+                   onEachFeature:function(feature, layer) {
+                       layer.setText(feature.properties.name_stree.toString())
+                   }, zoom: 5
+               });
+               geojsonStreetsLayer.addTo(map);
+                var geojsonAteLayer = new L.GeoJSON.AJAX("{% url 'ate' %}", {
+                   onEachFeature:function(feature, layer) {
+                        layer.bindPopup(feature.properties.name_ate.toString());
+                    }
+                });
+               geojsonAteLayer.addTo(map);
+               var geojsonAddressLayer = new L.GeoJSON.AJAX("{% url 'address' %}", {
+                   onEachFeature:function (feature, layer) {
+                       layer.bindPopup(feature.properties.house_num.toString());
+                   }
+               });
+               geojsonAddressLayer.addTo(map);
+           }
+      </script>
+
+
+
+{% endblock %}

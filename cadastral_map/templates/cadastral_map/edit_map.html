@@ -1,0 +1,174 @@
+{% extends 'main.html' %}
+{% block map %}
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <title>Draw Feature Example</title>
+
+        {% load staticfiles %}
+
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/reset.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/edit_map.css' %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'styles/edit.css' %}" />
+        <script src="http://dev.openlayers.org/OpenLayers.js"></script>
+        <script type="text/javascript">
+            var apiKey = "ApTJzdkyN1DdFKkRAE6QIDtzihNaf6IWJsT-nQ_2eMoO4PN__0Tzhl2-WgJtXFSp";
+
+            var map, drawControls;
+            //OpenLayers.ProxyHost = "/cgi-bin/proxy.cgi?url=";
+            function init(viewModel){
+                map = new OpenLayers.Map('map',{projection: new OpenLayers.Projection("EPSG:900913"),
+                                            displayProjection: new OpenLayers.Projection("EPSG:4326")});
+
+                var wmsLayer = new OpenLayers.Layer.OSM();
+
+                var bingAerial = new OpenLayers.Layer.Bing({
+                    key: apiKey,
+                    type: "Aerial"
+                });
+
+                //var saveStrategy = new OpenLayers.Strategy.Save();
+
+
+
+
+{#                var wfs = new OpenLayers.Layer.Vector("Gas", {#}
+{#                    strategies: [new OpenLayers.Strategy.BBOX(), saveStrategy],#}
+{#                    projection: new OpenLayers.Projection("EPSG:900913"),#}
+{#                    protocol: new OpenLayers.Protocol.WFS({#}
+{#                        version: "1.1.0",#}
+{#                        srsName: "EPSG:4326",#}
+{#                        url: "http://localhost:8080/geoserver/wfs",#}
+{#                        featureNS :  "http://www.openplans.org/postgis",#}
+{#                        featureType: "Postgis:cadastral_map_gas"#}
+{#                    }),#}
+{#                    visibility: true#}
+{#                });#}
+{#                map.addLayer(wfs);#}
+
+                var geojson_format = new OpenLayers.Format.GeoJSON();
+                var gasLayer = new OpenLayers.Layer.Vector("GAS")
+                gasLayer.addFeatures(geojson_format.read(viewModel.gasGeoJson));
+
+                var myStyle= {fillColor: "#0000FF",fillOpacity:"0.55"};
+                var waterLayer = new OpenLayers.Layer.Vector("Water", {style: myStyle});
+                waterLayer.addFeatures(geojson_format.read(viewModel.waterGeoJson));
+
+                var wms = new OpenLayers.Layer.WMS(
+                     //имя слоя для контрола выбора слоев
+                     "gass",
+
+                     //адрес wms сервера
+                     "http://localhost:8080/geoserver/Postgis/wms",
+
+                      //параметры специфичные для wms:
+                      //набор слоев, которые wms сервер склеит в картинку перед тем, как вернуть вам результат
+                     {layers: "Postgis:cadastral_map_gas"}
+                );
+
+                map.addLayers([bingAerial, wmsLayer, wms, gasLayer, waterLayer]);
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.addControl(new OpenLayers.Control.MousePosition());
+                map.addControl(new OpenLayers.Control.ScaleLine());
+
+                //var panel = new OpenLayers.Control.Panel({
+                //    displayClass: 'customEditingToolbar',
+                //    allowDepress: true
+                //});
+
+                drawControls = {
+                    waterPolygon: new OpenLayers.Control.DrawFeature(waterLayer, OpenLayers.Handler.Polygon),
+                    gasPolygon: new OpenLayers.Control.DrawFeature(gasLayer, OpenLayers.Handler.Polygon)
+                };
+
+                var selectedGasPolygons = [];
+                var selectedWaterPolygons = [];
+
+                for (var key in drawControls) {
+                    map.addControl(drawControls[key]);
+                    drawControls[key].events.register('featureadded', drawControls[key], function (f) {
+                        var wkt = new OpenLayers.Format.WKT();
+                        var selectedCoordinates = wkt.write(f.feature);
+
+                        var selectedDrawOption = document.querySelector('input[name="drawOption"]:checked').value;
+                        switch(selectedDrawOption) {
+                            case 'gasPolygon':
+                                selectedGasPolygons.push(selectedCoordinates);
+                                document.getElementById('gasCoordinates').value = JSON.stringify(selectedGasPolygons);
+                                break;
+                            case 'waterPolygon':
+                                selectedWaterPolygons.push(selectedCoordinates);
+                                document.getElementById('waterCoordinates').value = JSON.stringify(selectedWaterPolygons);
+                                break;
+                            default:
+                                break;
+                        }
+                    });
+                }
+
+                var fromProjection = new OpenLayers.Projection("EPSG:4326"); // Transform from WGS 1984
+                var toProjection = new OpenLayers.Projection("EPSG:900913"); // to Spherical Mercator Projection
+                var position = new OpenLayers.LonLat(27.57,53.91).transform( fromProjection, toProjection);
+                var zoom = 10;
+
+                map.setCenter(position, zoom);
+
+                //document.getElementById('noneToggle').checked = true;
+            }
+
+            function toggleControl(element) {
+                for (key in drawControls) {
+                    var control = drawControls[key];
+                    if(element.value == key && element.checked) {
+                        control.activate();
+                    } else {
+                        control.deactivate();
+                    }
+                }
+            }
+
+            function allowPan(element) {
+                var stop = !element.checked;
+                for(var key in drawControls) {
+                    drawControls[key].handler.stopDown = stop;
+                    drawControls[key].handler.stopUp = stop;
+                }
+            }
+        </script>
+
+    <body onload="init({{ viewModel }})">
+        <h1 id="title">Cadastral map</h1>
+
+        <p id="shortdesc">
+            Creation layer for cadastral estimation
+        </p>
+
+        <div id="map" class="smallmap"></div>
+         {% if user.is_authenticated %}
+        <ul id="controlToggle">
+            <li>
+                <input type="radio" name="drawOption" value="gasPolygon" id="gasPolygonOption" onclick="toggleControl(this);" />
+                <label for="gasPolygonOption">Create Gas layer</label>
+            </li>
+            <li>
+                <input type="radio" name="drawOption" value="waterPolygon" id="waterPolygonOption" onclick="toggleControl(this);" />
+                <label for="waterPolygonOption">Create Water layer</label>
+            </li>
+        </ul>
+
+        <div id="docs">
+            <p>With the point drawing control active, click on the map to add a point.</p>
+
+        </div>
+
+        <h2></h2>
+        <form action="{% url 'edit_map'%}" method="post">{% csrf_token %}
+            <input type="hidden" name="gasCoordinates" id="gasCoordinates" />
+            <br/>
+            <input type="hidden" name="waterCoordinates" id="waterCoordinates" />
+
+            <input type="submit" value="Сохранить изменения" />
+        </form>
+        {% endif %}
+    </body>
+{% endblock %}
